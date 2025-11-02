@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptography Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .method-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .method-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .method-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .method-title {
+            color: #333;
+            font-size: 1.5em;
+        }
+        
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .info-box h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .info-box p {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            min-height: 100px;
+            margin-bottom: 15px;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result-box {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .result-box.show {
+            display: block;
+        }
+        
+        .result-label {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .decrypt-btn {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        .success-message {
+            color: #27ae60;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+        }
+        
+        .verify-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .verify-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Cryptography Methods Demo</h1>
+        
+        <!-- SHA256 Hashing -->
+        <div class="method-card">
+            <div class="method-header">
+                <div class="method-number">1</div>
+                <div class="method-title">SHA256 Hashing</div>
+            </div>
+            
+            <div class="info-box">
+                <h3>What is SHA256?</h3>
+                <p>SHA256 (Secure Hash Algorithm 256-bit) is a cryptographic hash function that produces a fixed-size 256-bit (32-byte) hash value. It's a one-way function - you can't reverse it to get the original data. Commonly used for password storage, data integrity verification, and blockchain technology.</p>
+                <p><strong>Key Features:</strong> Deterministic (same input = same output), fast to compute, avalanche effect (small input change = completely different hash), collision-resistant.</p>
+            </div>
+            
+            <textarea id="sha256-input" placeholder="Enter text to hash..."></textarea>
+            <button onclick="generateSHA256()">Generate SHA256 Hash</button>
+            
+            <div id="sha256-result" class="result-box">
+                <div class="result-label">SHA256 Hash:</div>
+                <div class="result-value" id="sha256-hash"></div>
+                <div class="result-label">Hash Length: <span id="sha256-length"></span> characters (always 64 hex characters = 256 bits)</div>
+            </div>
+            
+            <div style="margin-top: 30px; padding-top: 30px; border-top: 2px solid #e0e0e0;">
+                <h3 style="color: #667eea; margin-bottom: 15px;">🔍 Verify SHA256 Hash</h3>
+                <textarea id="sha256-verify-input" placeholder="Enter text to verify..."></textarea>
+                <input type="text" id="sha256-verify-hash" placeholder="Enter hash to verify against...">
+                <button onclick="verifySHA256()">Verify Hash</button>
+                
+                <div id="sha256-verify-result" class="result-box">
+                    <div id="sha256-verify-message" style="font-size: 16px; font-weight: bold; margin-bottom: 10px;"></div>
+                    <div class="result-label">Calculated Hash:</div>
+                    <div class="result-value" id="sha256-verify-calculated"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- HMAC Generation -->
+        <div class="method-card">
+            <div class="method-header">
+                <div class="method-number">2</div>
+                <div class="method-title">HMAC Generation</div>
+            </div>
+            
+            <div class="info-box">
+                <h3>What is HMAC?</h3>
+                <p>HMAC (Hash-based Message Authentication Code) combines a cryptographic hash function with a secret key to provide both data integrity and authenticity. Unlike SHA256, HMAC requires a secret key, making it suitable for verifying that a message came from a specific sender and hasn't been tampered with.</p>
+                <p><strong>Key Features:</strong> Requires secret key, provides authentication, verifies message integrity, resistant to length extension attacks. Used in API authentication, JWT tokens, and secure messaging.</p>
+            </div>
+            
+            <textarea id="hmac-input" placeholder="Enter text to generate HMAC..."></textarea>
+            <input type="text" id="hmac-key" placeholder="Enter secret key (leave empty to generate random key)">
+            <button onclick="generateHMAC()">Generate HMAC</button>
+            
+            <div id="hmac-result" class="result-box">
+                <div class="result-label">HMAC:</div>
+                <div class="result-value" id="hmac-value"></div>
+                <div class="result-label">Secret Key:</div>
+                <div class="result-value" id="hmac-key-value"></div>
+                <div id="hmac-key-notice" style="color: #e74c3c; font-weight: bold; margin-top: 10px;"></div>
+            </div>
+            
+            <div style="margin-top: 30px; padding-top: 30px; border-top: 2px solid #e0e0e0;">
+                <h3 style="color: #667eea; margin-bottom: 15px;">🔍 Verify HMAC</h3>
+                <textarea id="hmac-verify-input" placeholder="Enter message to verify..."></textarea>
+                <input type="text" id="hmac-verify-key" placeholder="Enter secret key...">
+                <input type="text" id="hmac-verify-value" placeholder="Enter HMAC to verify...">
+                <button onclick="verifyHMAC()">Verify HMAC</button>
+                
+                <div id="hmac-verify-result" class="result-box">
+                    <div id="hmac-verify-message" style="font-size: 16px; font-weight: bold; margin-bottom: 10px;"></div>
+                    <div class="result-label">Calculated HMAC:</div>
+                    <div class="result-value" id="hmac-verify-calculated"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Hybrid RSA + AES -->
+        <div class="method-card">
+            <div class="method-header">
+                <div class="method-number">3</div>
+                <div class="method-title">Hybrid RSA + AES Encryption</div>
+            </div>
+            
+            <div class="info-box">
+                <h3>What is Hybrid Encryption?</h3>
+                <p>Hybrid encryption combines the strengths of both asymmetric (RSA) and symmetric (AES) encryption. RSA is secure but slow for large data, while AES is fast but requires secure key exchange. The solution: use AES to encrypt your data (fast), then use RSA to encrypt the AES key (secure).</p>
+                <p><strong>How it works:</strong> 1) Generate random AES key, 2) Encrypt data with AES (fast), 3) Encrypt AES key with RSA public key (secure), 4) Generate HMAC for authentication (Encrypt-then-MAC), 5) Verify HMAC before decryption (detects tampering), 6) Decrypt AES key with RSA private key, 7) Decrypt data with AES key. Used in SSL/TLS, PGP, and secure file transfer.</p>
+                <p><strong>Security Feature:</strong> This implementation uses HMAC-SHA256 authentication to detect any tampering with the encrypted data, IV, or key. If you modify even one character, decryption will fail with an authentication error!</p>
+            </div>
+            
+            <textarea id="hybrid-input" placeholder="Enter text to encrypt..."></textarea>
+            <button onclick="hybridEncrypt()">Encrypt with Hybrid Method</button>
+            
+            <div id="hybrid-result" class="result-box">
+                <div class="result-label">Encrypted Package (copy this entire block):</div>
+                <textarea id="hybrid-encrypted-package" style="min-height: 150px; font-size: 12px;" readonly></textarea>
+                <button onclick="copyToClipboard('hybrid-encrypted-package')" style="margin-top: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">📋 Copy Encrypted Package</button>
+            </div>
+            
+            <div class="verify-section">
+                <h3>🔓 Decrypt Hybrid Encrypted Data</h3>
+                <textarea id="hybrid-decrypt-input" placeholder="Paste the entire encrypted package here..."></textarea>
+                <button class="decrypt-btn" onclick="hybridDecryptFromPackage()">Decrypt Package</button>
+                
+                <div id="hybrid-decrypt-result" class="result-box">
+                    <div class="result-label">Decrypted Text:</div>
+                    <div class="result-value" id="hybrid-decrypted-text" style="font-weight: bold;"></div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #ffc107;">
+                <strong>💡 How to test tampering detection:</strong>
+                <ol style="margin: 10px 0 0 20px; line-height: 1.8;">
+                    <li>Encrypt some text and copy the encrypted package</li>
+                    <li>Paste it in the decrypt section</li>
+                    <li><strong>Modify any character</strong> in the pasted package</li>
+                    <li>Click Decrypt - you'll see: 🚨 "TAMPERING DETECTED!"</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let hybridData = {};
+        
+        async function generateSHA256() {
+            const text = document.getElementById('sha256-input').value;
+            if (!text) {
+                alert('Please enter some text to hash');
+                return;
+            }
+            
+            const response = await fetch('/sha256', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text })
+            });
+            
+            const data = await response.json();
+            document.getElementById('sha256-hash').textContent = data.hash;
+            document.getElementById('sha256-length').textContent = data.length;
+            document.getElementById('sha256-result').classList.add('show');
+        }
+        
+        async function verifySHA256() {
+            const text = document.getElementById('sha256-verify-input').value;
+            const hash = document.getElementById('sha256-verify-hash').value;
+            
+            if (!text || !hash) {
+                alert('Please enter both text and hash to verify');
+                return;
+            }
+            
+            const response = await fetch('/sha256/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text, hash })
+            });
+            
+            const data = await response.json();
+            const messageEl = document.getElementById('sha256-verify-message');
+            messageEl.textContent = data.message;
+            messageEl.className = data.valid ? 'success-message' : 'error-message';
+            
+            document.getElementById('sha256-verify-calculated').textContent = data.calculated_hash;
+            document.getElementById('sha256-verify-result').classList.add('show');
+        }
+        
+        async function generateHMAC() {
+            const text = document.getElementById('hmac-input').value;
+            const key = document.getElementById('hmac-key').value;
+            
+            if (!text) {
+                alert('Please enter some text to generate HMAC');
+                return;
+            }
+            
+            const response = await fetch('/hmac', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text, key })
+            });
+            
+            const data = await response.json();
+            document.getElementById('hmac-value').textContent = data.hmac;
+            document.getElementById('hmac-key-value').textContent = data.key;
+            
+            if (data.key_generated) {
+                document.getElementById('hmac-key-notice').textContent = '⚠️ Random key was generated. Save this key to verify messages later!';
+            } else {
+                document.getElementById('hmac-key-notice').textContent = '';
+            }
+            
+            document.getElementById('hmac-result').classList.add('show');
+        }
+        
+        async function verifyHMAC() {
+            const text = document.getElementById('hmac-verify-input').value;
+            const key = document.getElementById('hmac-verify-key').value;
+            const hmacValue = document.getElementById('hmac-verify-value').value;
+            
+            if (!text || !key || !hmacValue) {
+                alert('Please enter message, key, and HMAC to verify');
+                return;
+            }
+            
+            const response = await fetch('/hmac/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text, key, hmac: hmacValue })
+            });
+            
+            const data = await response.json();
+            const messageEl = document.getElementById('hmac-verify-message');
+            messageEl.textContent = data.message;
+            messageEl.className = data.valid ? 'success-message' : 'error-message';
+            
+            document.getElementById('hmac-verify-calculated').textContent = data.calculated_hmac;
+            document.getElementById('hmac-verify-result').classList.add('show');
+        }
+        
+        async function hybridEncrypt() {
+            const text = document.getElementById('hybrid-input').value;
+            if (!text) {
+                alert('Please enter some text to encrypt');
+                return;
+            }
+            
+            const response = await fetch('/hybrid', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text })
+            });
+            
+            const data = await response.json();
+            
+            // Create a single package with all components
+            const encryptedPackage = JSON.stringify({
+                encrypted_data: data.encrypted_data,
+                encrypted_key: data.encrypted_key,
+                iv: data.iv,
+                auth_tag: data.auth_tag
+            }, null, 2);
+            
+            document.getElementById('hybrid-encrypted-package').value = encryptedPackage;
+            document.getElementById('hybrid-result').classList.add('show');
+            document.getElementById('hybrid-decrypt-result').classList.remove('show');
+        }
+        
+        async function hybridDecryptFromPackage() {
+            const packageText = document.getElementById('hybrid-decrypt-input').value.trim();
+            
+            if (!packageText) {
+                alert('Please paste the encrypted package');
+                return;
+            }
+            
+            try {
+                // Parse the JSON package
+                const packageData = JSON.parse(packageText);
+                
+                const response = await fetch('/hybrid/decrypt', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(packageData)
+                });
+                
+                const data = await response.json();
+                const resultText = document.getElementById('hybrid-decrypted-text');
+                
+                if (data.success) {
+                    resultText.textContent = '✅ ' + data.decrypted_text;
+                    resultText.style.color = '#27ae60';
+                } else {
+                    if (data.tampered) {
+                        resultText.textContent = '🚨 TAMPERING DETECTED! ' + data.error;
+                    } else {
+                        resultText.textContent = '❌ Error: ' + data.error;
+                    }
+                    resultText.style.color = '#e74c3c';
+                }
+                
+                document.getElementById('hybrid-decrypt-result').classList.add('show');
+            } catch (e) {
+                const resultText = document.getElementById('hybrid-decrypted-text');
+                resultText.textContent = '❌ Invalid encrypted package format. Please paste the complete encrypted package.';
+                resultText.style.color = '#e74c3c';
+                document.getElementById('hybrid-decrypt-result').classList.add('show');
+            }
+        }
+        
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            element.select();
+            document.execCommand('copy');
+            
+            // Visual feedback
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✅ Copied!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
